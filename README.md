@@ -1,11 +1,11 @@
-# Mission Jeet - GB STUDY
+# Next Toppers - GB STUDY
 
-Ye project **Mission Jeet** ka dedicated standalone portal hai.
+Ye project **Next Toppers** ka dedicated standalone portal hai.
 
 ## 🌟 Features:
 - **Direct Batches:** Three-line menu kholne par sirf:
   - 📖 **Study**
-  - 🎓 **Batches** (Direct Mission Jeet batches open honge)
+  - 🎓 **Batches** (Direct Next Toppers batches open honge)
   - 📚 **My Batches**
   - 🕒 **History**
   - ✈️ **Join Telegram**
@@ -24,4 +24,4 @@ Ye project **Mission Jeet** ka dedicated standalone portal hai.
    npm i -g vercel
    vercel
    ```
-4. Deployment complete hone ke baad aapka **Mission Jeet** platform live ho jayega!
+4. Deployment complete hone ke baad aapka **Next Toppers** platform live ho jayega!

@@ -10,7 +10,7 @@ const TARGET_HOST = 'www.learnxpw.site';
 const TARGET_ORIGIN = `https://${TARGET_HOST}`;
 
 // Brand settings configured as requested
-const BRAND_NAME = 'Mission Jeet - GB STUDY';
+const BRAND_NAME = 'Next Toppers - GB STUDY';
 const TELEGRAM_URL = 'https://t.me/GBFreestudy';
 const ICON_URL = 'https://i.ibb.co/Q3g9fGSt/1791541921524.png';
 const OLD_ICON_URL = 'https://i.ibb.co/V8CbjrG/image.png';
@@ -152,15 +152,17 @@ function isTokenExpired(cookieStr: string): boolean {
   }
 }
 
-// Proactively keep session token alive 24/7 by refreshing every 6 hours
-setInterval(async () => {
-  try {
-    console.log('[Heartbeat] Proactively refreshing session token...');
-    await fetchFreshAccessCookie();
-  } catch (err) {
-    console.warn('[Heartbeat] Proactive token refresh error:', err);
-  }
-}, 6 * 60 * 60 * 1000);
+// Proactively keep session token alive 24/7 by refreshing every 6 hours (only in long-running servers, skip in serverless)
+if (!process.env.VERCEL) {
+  setInterval(async () => {
+    try {
+      console.log('[Heartbeat] Proactively refreshing session token...');
+      await fetchFreshAccessCookie();
+    } catch (err) {
+      console.warn('[Heartbeat] Proactive token refresh error:', err);
+    }
+  }, 6 * 60 * 60 * 1000);
+}
 
 async function fetchFreshAccessCookie(): Promise<string> {
   try {
@@ -463,9 +465,11 @@ async function prewarmEssentialPages() {
   scheduleSaveOfflineStorage();
 }
 
-// Pre-warm on server boot (delayed 1s) and every 10 minutes
-setTimeout(prewarmEssentialPages, 1000);
-setInterval(prewarmEssentialPages, 10 * 60 * 1000);
+// Pre-warm on server boot (delayed 1s) and every 10 minutes (skip in serverless)
+if (!process.env.VERCEL) {
+  setTimeout(prewarmEssentialPages, 1000);
+  setInterval(prewarmEssentialPages, 10 * 60 * 1000);
+}
 
 /**
  * Transforms text responses (HTML, Next.js RSC, JS bundles, API JSON)
@@ -518,43 +522,13 @@ function transformText(content: string): string {
   text = text.replaceAll('"isDirectLoginOpen":false', '"isDirectLoginOpen":true');
 
 
-  // Platform specific sidebar filtering (missionjeet)
-  const currentPlatformId = 'missionjeet';
-  if (currentPlatformId === 'nexttoppers') {
-    text = text.replaceAll('<span>Next Toppers</span>', '<span>Batches</span>');
-    text = text.replaceAll(/<a href="\/study\/missionjeet"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/vibrant"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/sway"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/batches"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/pi"[^>]*>[\s\S]*?<\/a>/g, '');
-  } else if (currentPlatformId === 'missionjeet') {
-    text = text.replaceAll('<span>MissionJeet</span>', '<span>Batches</span>');
-    text = text.replaceAll(/<a href="\/study\/nexttoppers"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/vibrant"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/sway"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/batches"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/pi"[^>]*>[\s\S]*?<\/a>/g, '');
-  } else if (currentPlatformId === 'vibrant') {
-    text = text.replaceAll('<span>Vibrant</span>', '<span>Batches</span>');
-    text = text.replaceAll(/<a href="\/study\/nexttoppers"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/missionjeet"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/sway"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/batches"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/pi"[^>]*>[\s\S]*?<\/a>/g, '');
-  } else if (currentPlatformId === 'sway') {
-    text = text.replaceAll('<span>Selection Way</span>', '<span>Batches</span>');
-    text = text.replaceAll(/<a href="\/study\/nexttoppers"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/missionjeet"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/vibrant"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/batches"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/pi"[^>]*>[\s\S]*?<\/a>/g, '');
-  } else if (currentPlatformId === 'batches') {
-    text = text.replaceAll(/<a href="\/study\/nexttoppers"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/missionjeet"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/vibrant"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/sway"[^>]*>[\s\S]*?<\/a>/g, '');
-    text = text.replaceAll(/<a href="\/study\/pi"[^>]*>[\s\S]*?<\/a>/g, '');
-  }
+  // Next Toppers dedicated sidebar rules
+  text = text.replaceAll('<span>Next Toppers</span>', '<span>Batches</span>');
+  text = text.replaceAll(/<a href="\/study\/missionjeet"[^>]*>[\s\S]*?<\/a>/g, '');
+  text = text.replaceAll(/<a href="\/study\/vibrant"[^>]*>[\s\S]*?<\/a>/g, '');
+  text = text.replaceAll(/<a href="\/study\/sway"[^>]*>[\s\S]*?<\/a>/g, '');
+  text = text.replaceAll(/<a href="\/study\/batches"[^>]*>[\s\S]*?<\/a>/g, '');
+  text = text.replaceAll(/<a href="\/study\/pi"[^>]*>[\s\S]*?<\/a>/g, '');
 
   // 6. Inject UI Enhancer (PW BOOKS, Powered by GB STUDY, and PW Banner fallback)
   // Injected inside existing head script tag so it executes immediately without React #418 errors
@@ -719,14 +693,14 @@ function transformText(content: string): string {
     if (!document.querySelector('#gb-platform-clean')) {
       var st = document.createElement('style');
       st.id = 'gb-platform-clean';
-      st.textContent = 'a[data-gb-downloads="1"], #gb-downloads-btn, a[href*="download"], a[href*="zips"], a[href*="/study/pi"], a[href$="/pi"], a[data-pw-books="1"], a[href*="gb-study-1"], a[href*="/study/nexttoppers"], a[href*="/study/vibrant"], a[href*="/study/sway"], a[href*="/study/batches"] { display: none !important; }';
+      st.textContent = 'a[data-gb-downloads="1"], #gb-downloads-btn, a[href*="download"], a[href*="zips"], a[href*="/study/pi"], a[href$="/pi"], a[data-pw-books="1"], a[href*="gb-study-1"], a[href*="/study/missionjeet"], a[href*="/study/vibrant"], a[href*="/study/sway"], a[href*="/study/batches"] { display: none !important; }';
       (document.head || document.documentElement).appendChild(st);
     }
   } catch(e) {}
 
   function fixPlatformSidebar() {
     try {
-      var targetPlatform = 'missionjeet';
+      var targetPlatform = 'nexttoppers';
       var allNavs = document.querySelectorAll('nav');
       allNavs.forEach(function(nav) {
         var links = nav.querySelectorAll('a');
@@ -850,12 +824,7 @@ app.get('/logo.png', (_req, res) => {
   }
 });
 
-    });
-  });
-  </script>
-</body>
-</html>`);
-});
+
 
 
 // Root path handler: directly redirect to /study/batches so the user lands straight on the batches page
@@ -863,7 +832,7 @@ app.get('/', (req, res) => {
   if (req.query.home === '1') {
     handleProxy(req, res, '/');
   } else {
-    res.redirect(307, '/study/missionjeet');
+    res.redirect(307, '/study/nexttoppers');
   }
 });
 
@@ -882,11 +851,11 @@ app.get('/verify', async (_req, res) => {
   if (cookie) {
     res.setHeader('Set-Cookie', `${cookie}; Path=/; SameSite=Lax; Max-Age=86400`);
   }
-  res.redirect(307, '/study/missionjeet');
+  res.redirect(307, '/study/nexttoppers');
 });
 
 app.get('/study/key', (_req, res) => {
-  res.redirect(307, '/study/missionjeet');
+  res.redirect(307, '/study/nexttoppers');
 });
 
 // Resilient /api/Schedule handler: 100% live stream resolution, anti-block, and offline fallback

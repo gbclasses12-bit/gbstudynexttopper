@@ -10,7 +10,7 @@ const TARGET_HOST = 'www.learnxpw.site';
 const TARGET_ORIGIN = `https://${TARGET_HOST}`;
 
 // Brand settings configured as requested
-const BRAND_NAME = 'Next Toppers - GB STUDY';
+const BRAND_NAME = 'Mission Jeet - GB STUDY';
 const TELEGRAM_URL = 'https://t.me/GBFreestudy';
 const ICON_URL = 'https://i.ibb.co/Q3g9fGSt/1791541921524.png';
 const OLD_ICON_URL = 'https://i.ibb.co/V8CbjrG/image.png';
@@ -518,8 +518,8 @@ function transformText(content: string): string {
   text = text.replaceAll('"isDirectLoginOpen":false', '"isDirectLoginOpen":true');
 
 
-  // Platform specific sidebar filtering (nexttoppers)
-  const currentPlatformId = 'nexttoppers';
+  // Platform specific sidebar filtering (missionjeet)
+  const currentPlatformId = 'missionjeet';
   if (currentPlatformId === 'nexttoppers') {
     text = text.replaceAll('<span>Next Toppers</span>', '<span>Batches</span>');
     text = text.replaceAll(/<a href="\/study\/missionjeet"[^>]*>[\s\S]*?<\/a>/g, '');
@@ -719,14 +719,14 @@ function transformText(content: string): string {
     if (!document.querySelector('#gb-platform-clean')) {
       var st = document.createElement('style');
       st.id = 'gb-platform-clean';
-      st.textContent = 'a[data-gb-downloads="1"], #gb-downloads-btn, a[href*="download"], a[href*="zips"], a[href*="/study/pi"], a[href$="/pi"], a[data-pw-books="1"], a[href*="gb-study-1"], a[href*="/study/missionjeet"], a[href*="/study/vibrant"], a[href*="/study/sway"], a[href*="/study/batches"] { display: none !important; }';
+      st.textContent = 'a[data-gb-downloads="1"], #gb-downloads-btn, a[href*="download"], a[href*="zips"], a[href*="/study/pi"], a[href$="/pi"], a[data-pw-books="1"], a[href*="gb-study-1"], a[href*="/study/nexttoppers"], a[href*="/study/vibrant"], a[href*="/study/sway"], a[href*="/study/batches"] { display: none !important; }';
       (document.head || document.documentElement).appendChild(st);
     }
   } catch(e) {}
 
   function fixPlatformSidebar() {
     try {
-      var targetPlatform = 'nexttoppers';
+      var targetPlatform = 'missionjeet';
       var allNavs = document.querySelectorAll('nav');
       allNavs.forEach(function(nav) {
         var links = nav.querySelectorAll('a');
@@ -863,7 +863,7 @@ app.get('/', (req, res) => {
   if (req.query.home === '1') {
     handleProxy(req, res, '/');
   } else {
-    res.redirect(307, '/study/nexttoppers');
+    res.redirect(307, '/study/missionjeet');
   }
 });
 
@@ -882,11 +882,11 @@ app.get('/verify', async (_req, res) => {
   if (cookie) {
     res.setHeader('Set-Cookie', `${cookie}; Path=/; SameSite=Lax; Max-Age=86400`);
   }
-  res.redirect(307, '/study/nexttoppers');
+  res.redirect(307, '/study/missionjeet');
 });
 
 app.get('/study/key', (_req, res) => {
-  res.redirect(307, '/study/nexttoppers');
+  res.redirect(307, '/study/missionjeet');
 });
 
 // Resilient /api/Schedule handler: 100% live stream resolution, anti-block, and offline fallback
